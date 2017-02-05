@@ -87,6 +87,7 @@ class Assignment
       # accept an id and name input parameters
       # use the TodoList Model class to update the `list_name` for the TodoList associated with id primary key 
       # (no return is required)
+      get_todolist_byid(id).update(:list_name => name)
   end 
 
   #
