@@ -80,6 +80,7 @@ class Assignment
       # accept an id and password_digest input parameters
       # use the User Model class to update the `password_digest` for the User associated with the id primary key
       # (no return is required)
+      get_user_byid(id).update(:password_digest => password_digest)
   end
 
   def update_listname(id, name)
