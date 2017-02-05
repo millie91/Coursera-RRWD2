@@ -63,6 +63,7 @@ class Assignment
       # accept an id input parameter
       # use the User Model class to get the User associated with the `id` primary key
       # return the User instance that matches the provided id
+      User.find_by_id(id)
   end
 
   def get_todolist_byid(id)
