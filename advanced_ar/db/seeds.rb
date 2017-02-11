@@ -6,7 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Person.destroy all
+Person.destroy_all
 
 Person.create! [ #If a regular create fails, it will do it without telling you. In seeds.rb file it is a good idea to be using create! because if something goes wrong it will let you know.
 	{ first_name: "Kalman", last_name: "Smith", age: 33 },
