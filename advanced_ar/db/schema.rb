@@ -28,8 +28,7 @@ ActiveRecord::Schema.define(version: 20170211142505) do
     t.integer  "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_personal_infos_on_person_id"
   end
-
-  add_index "personal_infos", ["person_id"], name: "index_personal_infos_on_person_id"
 
 end
