@@ -6,6 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+Job.destroy_all
 Person.destroy_all
 
 Person.create! [
@@ -16,4 +17,8 @@ Person.create! [
   { first_name: "John", last_name: "Smith", age: 27, login: "john2", pass: "no_idea" },
   { first_name: "Bill", last_name: "Gates", age: 75, login: "bill", pass: "windows3.1" },
   { first_name: "LeBron", last_name: "James", age: 30, login: "bron", pass: "need more rings" }
+]
+
+Person.first.jobs.create! [
+  { title: "Developer", company: "MS", position_id: "#1234" },
 ]
