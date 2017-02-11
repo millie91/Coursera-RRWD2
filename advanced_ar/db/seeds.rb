@@ -21,4 +21,10 @@ Person.create! [
 
 Person.first.jobs.create! [
   { title: "Developer", company: "MS", position_id: "#1234" },
+  { title: "Developer", company: "MS", position_id: "#1235" }
+]
+
+Person.last.jobs.create! [
+	{ title: "Sr. Developer", company: "MS", position_id: "#5234" },
+	{ title: "Sr. Developer", company: "MS", position_id: "#5235" }
 ]
