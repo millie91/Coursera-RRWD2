@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211133902) do
+ActiveRecord::Schema.define(version: 20170211142505) do
 
   create_table "people", force: :cascade do |t|
     t.string   "first_name"
@@ -21,5 +21,15 @@ ActiveRecord::Schema.define(version: 20170211133902) do
     t.string   "login"
     t.string   "pass"
   end
+
+  create_table "personal_infos", force: :cascade do |t|
+    t.float    "height"
+    t.float    "weight"
+    t.integer  "person_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "personal_infos", ["person_id"], name: "index_personal_infos_on_person_id"
 
 end
