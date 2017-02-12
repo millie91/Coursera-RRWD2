@@ -1,27 +1,20 @@
-## Assignment for Module #1: Basic Active Record CRUD
+## Assignment for Module #2: Active Record Relationships
 
-The overall goal of this assignment is to assess your ability to implement basic CRUD functionality of Active Record. This includes:
+The overall goal of this assignment is to assess your ability to implement and use Active Record model relationships. 
+This includes:
 
-  * Creating Active Record Models using a rails-provided generator (`rails g model` or `rails g scaffold`)
-  * Creating a DataBase (DB) schema
-  * Inserting rows in the DB
-  * Updating rows in the DB
-  * Querying the DB with exact matching
-  * Getting rows from the DB by Primary Key (PK)
-  * Deleting rows from the DB
-  * Retrieving paginated results from the DB using `limit` and `offset` keywords
+  * Creating Active Record models and relationships between the models using a rails-provided generator (`rails g model` or `rails g scaffold`)
+  * Providing validations for models (using built-in Active Record validations as well as custom validations)
+  * Implementing a grandparent relationship with a `:through` option
+  * Providing bootstrap data using a `seeds.rb` file
+  * Implementing `default_scope` queries
+  * Implementing aggregation queries
+  * Implementing advanced queries (e.g., SQL snippets)
+  * Implementing model/database (DB) cascades
 
-This does NOT include: 
-  
-  * Seeding with seeds.rb
-  * Relationships
-  * Validations 
-  * Advanced queries 
+The functional goal of this assignment is to implement relationships and 
+query behavior for the following four (4) model classes
 
-These topics of Active Record are covered in Module 2.
-
-The functional goal of this assignment is to implement CRUD behavior for four (4) Model classes
-  
   1. User
   2. Profile
   3. TodoList
@@ -29,27 +22,37 @@ The functional goal of this assignment is to implement CRUD behavior for four (4
 
 ### Functional Requirements
 
-1. Create several Active Record Model classes
+1. Create several Active Record model classes - some of which will
+have relationships defined when they are created
     * User
     * Profile
     * TodoList
     * TodoItem
 
-2. Create a DB schema for each Model class
+2. Create database migrations for relationships not present when the 
+model classes were created
 
-3. Demonstrate CRUD access to information in the DB using Active Record Model methods.
+3. Create a DB schema for each model class and their relationships
+
+4. Populate the DB with bootstrap data
+
+5. Implement relationship features
+
+6. Implement model class features
 
 ### Getting Started
 
-1. Create a new Rails application called `todolists`.
+1. Create a new Rails application called `todolists`. This will look quite a 
+bit like what you did in the module 1 assignment.
 
-2. Add the following specification to your Gemfile to enable rspec testing.
+2. Add the following specification to your Gemfile.
 
     ```ruby
     group :test do
-      gem 'rspec-rails', '~> 3.0'
+     gem 'rspec-rails', '~> 3.0'
     end
     ```
+
 3. Run the `bundle` command to resolve new gems 
 
 4. From the `todolists` application root directory, initialize the rspec tests using 
@@ -73,8 +76,6 @@ The functional goal of this assignment is to implement CRUD behavior for four (4
 
     ```shell
     |-- Gemfile
-    |-- assignment
-    |   `-- assignment.rb
     `-- spec
         `-- assignment_spec.rb
     ```
@@ -84,26 +85,19 @@ The functional goal of this assignment is to implement CRUD behavior for four (4
     your solution can be processed by the automated Grader when you submit. Any submission
     should be tested with this version of the file.
 
-    * add the `assignment/assignment.rb` file provided with the boostrap fileset to a 
-    corresponding `assignment` directory under your application root directory 
-    (e.g., `application-root-directory/assignment/assignment.rb`). 
-    (Note: You will need to create the `assignment` directory if you are copying the file.) 
-    The `assignment.rb` file contains a skeleton of methods for you to implement as part of your assignment.
-
-    * add the `spec/assignment_spec.rb` file provided with the bootstrap fileset to 
-    the corresponding `spec` directory that already exists under your application root directory 
+    * add the `spec/assignment_spec.rb` file provided with the bootstrap fileset 
+    to the corresponding `spec` directory that already exists under your application root directory
     (e.g., `application-root-directory/spec/assignment_spec.rb`). 
-    This `assignment_spec.rb` file contains tests that will help determine whether 
-    you have completed the assignment.
+    This file contains tests that will help determine whether you have completed the assignment.
 
 6. Run the rspec test(s) to receive feedback. `rspec` must be run from the root directory
 of your application.  All tests will (obviously) fail until you complete the specified solution.
 
     ```shell
-    $ rspec 
+    $ rspec
     ...
-    Finished in 0.02069 seconds (files took 1.63 seconds to load)
-    52 examples, 1 failure, 50 pending
+    Finished in 0.02831 seconds (files took 1.39 seconds to load)
+    56 examples, 1 failure, 54 pending
     ```
 
     To focus test feedback on a specific step of the requirements, add "-e rq##" to the
@@ -119,215 +113,261 @@ of your application.  All tests will (obviously) fail until you complete the spe
         Generate Rails application
           must have top level structure of a rails application
 
-    Finished in 0.00465 seconds (files took 1.56 seconds to load)
+    Finished in 0.00356 seconds (files took 1.3 seconds to load)
     1 example, 0 failures
     ```
 
-7. Implement your Model and assignment.rb solution and use the rspec tests to help 
+    ```shell
+    $ rspec -e rq02
+
+    ...
+    Finished in 0.00422 seconds (files took 2.16 seconds to load)
+    6 examples, 1 failure, 5 pending
+
+    Failed examples:
+
+    rspec ./spec/assignment_spec.rb:50 # Assignment rq02 User Model: User class created
+    ```
+
+7. Implement your Models and use the rspec tests to help 
 verify your completed solution.
 
 8. Submit your Rails app solution for grading.
 
 ### Technical Requirements
 
-1. Create a new Rails app called `todolists`. 
+1. Create a new Rails app called `todolists`.  Use the Gemfile provided
+in the boostrap files. Do not change the Gemfile from what is provided
+or your submitted solution may not be able to be processed by the grader
+(i.e., do not add any additional gems or change gem versions).
 
-    ```shell
-    $ rspec -e rq01
-    ```
+    An Entity Relationship (ER) diagram is provided below to help depict each 
+    Model's relationship:
 
-   Note: Use the Gemfile provided in the boostrap files. 
-   Windows users may need to add this gem into the Gemfile:
+        |------| 1      1 |----------|
+        | User |----------| Profile  |
+        |------|          |----------|
+            \
+             \
+              \ 1   * |----------| 1      * |----------|
+               \------| TodoList |----------| TodoItem | 
+                      |----------|          |----------|
 
-   ```ruby
-   # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-   gem 'tzinfo-data', platforms: [:mingw, :mswin]
-   ```
+2. Re-use the `User` model class and database table creation commands implemented in
+Assignment 1. (i.e., you may re-use the exact `rails generate` command
+you used to generate this class from the previous assignment)
 
-   Otherwise, do not change the Gemfile from what is provided
-   or your submitted solution may not be able to be processed by the grader
-   (i.e., do not add any additional gems or change gem versions).
+    * User
+        - username - a string to hold account identity
+        - password_digest - a string to hold password information
 
-2. Generate four (4) model classes and DB migrations having the following
-business-related fields using one of the `rails generate` commands.
-   
-    You can individually grade your results after each model class is created 
-    by migrating the database and running the rspec test listed after each 
-    classname. Example:
+    Reminder: Ruby/Rails conventions are that class names are CamelCase and file and method names are snake_case.
+
+    You must migrate the database schema at this time and in between 
+    each of the following steps to be able to pass the rspec tests incrementally.
 
     ```shell
     $ rake db:migrate
-    $ rspec -e rq02.1
-    ```
-    
-    1. User (`rq02.1`)
+    $ rspec -e rq02
+    Run options: include {:full_description=>/rq02/}
 
-        - username - a string to hold account identity
-        - password_digest - a string to hold password information
-    
-    2. Profile (`rq02.2`)
-    
+    Assignment
+      rq02
+        User Model:
+          User class created
+          User database structure in place
+          User class properties added
+            should respond to #username
+            should respond to #password_digest
+            should respond to #created_at
+            should respond to #updated_at
+
+    Finished in 0.19157 seconds (files took 1.27 seconds to load)
+    6 examples, 0 failures
+    ```
+
+3. Re-use the `Profile` model class and database table creation commands implemented in 
+Assignment 1, except this time create it with a reference to `User` when you create the model class.
+The grader will look for the relationship to be included in the initial create table
+migration for this model class.
+
+    * Profile
         - gender - a string to hold the words "male" or "female"
         - birth_year - a number to hold the year the individual was born
         - first_name - a string with given name of user
         - last_name - a string with family name of user
-    
-    3. TodoList (`rq02.3`)
-        
+        - user - a 1:1 relationship with User (i.e., Profile `belongs_to` User)
+
+    Also define the 1:1 `has_one` relationship in the `User` model class.
+
+    * User
+        - profile - a 1:1 relationship with `Profile` (i.e., User `has_one` profile). Add
+        appropriate options to have the `User` model class delete a 
+        `Profile` in a cascading fashion
+
+    Reminder: Relationships are only generated or migrated in the class forming the relationship 
+    (e.g., the many-side of a many:1). The inverse side of a relationship 
+    (e.g., the one-side of a 1:many) need only have the relationship declared in the model class
+    and not in the database migration. In this case, `Profile` is forming the relationship in the 
+    database and `User` is the inverse side.
+
+    ```shell
+    $ rake db:migrate
+    $ rspec -e rq03
+    ```
+
+4. Re-use the `TodoList` model class implemented in Assignment 1 (i.e., you may 
+re-use the exact `rails generate` command you used to generate this class
+from the previous assignment). The grader will look for no relations in the 
+initial create table migration for this model class.
+
+    * TodoList
         - list_name - a string name assigned to the list
-        - list_due_date - a date when TODO items in the list are to be complete.
-        This is a date. We are not concerned with the time of day.
-    
-    4. TodoItem (`rq02.4`)
-        
+        - list_due_date - a date when todo items in the list are to be complete. 
+          This is a date. We are not concerned with the time of day.
+
+    ```shell
+    $ rake db:migrate
+    $ rspec -e rq04
+    ```
+
+5. Create a database migration (hint: `rails g migration`) that adds a database reference from the `TodoLists` table
+to the `Users` table.  The grader will look for this relationship to be formed by a database table migration.
+
+    Also define the many:1 `belongs_to` relationship in the `TodoList` model class.
+
+    * TodoList
+        - user - a many:1 relationship with `User` (i.e., TodoList `belongs_to` User)
+
+    Also define the 1:many `has_many` relationship in the `User` model class.
+
+    * User
+        - todo_lists - a 1:many relationship with `TodoList` (i.e., User `has_many` todo_lists).
+        Add appropriate options to have the `User` model class delete a 
+	`TodoList` in a cascading fashion
+
+    ```shell
+    $ rake db:migrate
+    $ rspec -e rq05
+    ```
+
+6. Re-use the `TodoItem` model class implemented in Assignment 1, except this time
+create it with a many:1 `belongs_to` relationship with `TodoList` when you create the model class.
+The grader will look for the relationship to be included in the initial create table
+migration for this model class.
+
+    * TodoItem
         - due_date - date when the specific task is to be complete
         - title - a string with short name for specific task
         - description - a text field with narrative text for specific task
         - completed - a boolean value (default=false), indicating whether item is complete
+        - todo_list - a many:1 relationship with TodoList - TodoItem belongs_to TodoList
 
-    Reminder: Ruby/Rails conventions are that class names are CamelCase and file 
-    and method names are snake_case.
-    
-    Note: We will only be using the Model and DB migration classes for this
-    assignment. It is assumed that each Model will also contain the `id`, 
-    `created_at`, and `updated_at` fields. All four (4) Model Classes/DB tables
-    must be created, but the detailed tests will be focused on the User and TodoList
-    only. You will use the remaining classes more in a follow-on assignment.
+    Also define the 1:many `has_many` relationship in the `TodoList` model class.
 
-3. Insert rows in DB
+    * TodoList
+        - todo_items - a 1:many relationship with `TodoItem` (i.e., TodoList `has_many` todo_items).
+          Add appropriate options to have the `TodoList` model class delete a 
+          `TodoItem` in a cascading fashion
 
-    1. Implement the `create_user` method within `assignment/assignment.rb` to 
+    ```shell
+    $ rake db:migrate
+    $ rspec -e rq06
+    ```
+7. Migrate all database schema changes at this time if you have not yet done so. At this point
+you should have:
 
-        * accept a hash of user properties (`:username` and `:password_digest`) as an input parameter. 
-        Note these are 100% same as model class.
-        * use the User Model class to create a new user in the DB
-        * return an instance of the class with primary key (`id`), and dates (`created_at` and `updated_at`) assigned
-    
-        ```script
-        $ rspec -e rq03.1
-        ```
+    * four (4) create table (Users, Profiles, TodoLists, and TodoItems)
+    * one (1) update table migrations to add reference (TodoLists to Users)
 
-    2. Implement the `create_todolist` method within `assignment/assignment.rb` to 
+    ```shell
+    $ rake db:migrate
+    $ rspec -e rq07
+    ```
 
-        * accept a hash of todolist properties (`:name` and `:due_date`) as an input parameter. 
-        __Note__ these hash keys are not 100% the same as Model class. Your solution must convert these 
-        properties into hash with keys Active Record will accept for the schema for the class.
-        * use the TodoList Model class to create a new todolist in the DB
-        * return an instance of the class with primary key (`id`), and dates (`created_at` and `updated_at`) assigned
-    
-        ```script
-        $ rspec -e rq03.2
-        ```
+8. Implement a 1:many `:through` relationship from `User` to `TodoItem` by  using the 
+1:many relationship from `User` to `TodoLists` as a source.
 
-4. Retrieve paginated results from DB
+    * User
+        - todo_items - a 1:many through relationship with TodoItem through TodoLists 
+        (i.e., User `has_many` todo_items)
 
-    1. Implement the `find_allusers` method within `assignment/assignment.rb` to 
+    ```shell
+    $ rspec -e rq08
+    ```
 
-        * accept offset and limit input parameters
-        * use the User Model class to find all Users, ordered by `updated_at` ascending, with specified row offset and row limit
-        * return a collection of User instances that represent the specified page
-    
-        ```script
-        $ rspec -e rq04.1
-        ```
-    
-    2. Implement the `find_alllists` method within `assignment/assignment.rb` to 
+9. Create a seeds.rb file that will clear the existing data from the model tables and load the database with
 
-        * accept offset and limit input parameters
-        * use the TodoList Model class to find all TodoLists, ordered by `list_due_date` descending, with specified row offset and row limit
-        * return a collection of TodoList instances that represent the specified page
-    
-        ```script
-        $ rspec -e rq04.2
-        ```
+    * The four users below with their birth years:
+        - Carly Fiorina, 1954
+        - Donald Trump, 1946
+        - Ben Carson, 1951
+        - Hillary Clinton, 1947
+    * Usernames (e.g., their last names) and a password for each `User` 
+    * A `Profile` for each `User`
+    * Exactly one `TodoList` per `User` that is due one year from the date the database is loaded 
+        - (hint: `Date.today` provides today's date and `1.year` can be used to define one year)
+    * Each `TodoList` contains five (5) `TodoItems` (there must be 20 total) 
+    * Each `TodoItem` having a due date of one year from the time the database is loaded  
+    * Each `TodoItem` must have an arbitrary `title` and `description`s
+  
+    (Hint: you may want to consider using loops)
 
-5. Query DB with exact match
+    Once the seeds.rb file is created, populate the database using `rake db:seed`
 
-    1. Implement the `find_user_byname` method within `assignment/assignment.rb` to 
+    ```shell
+    $ rake db:seed
+    $ rspec -e rq09
+    ```
 
-        * accept a username input parameter
-        * use the User Model class to find all Users with the supplied username. Note that we have not yet constrained the username to be unique.
-        * return a collection of User instances that match the provided username
-    
-        ```script
-        $ rspec -e rq05.1
-        ```
-    
-    2. Implement the `find_todolist_byname` method within `assignment/assignment.rb` to 
+10. Add `default_scope` to both `TodoList` and `TodoItem` models to always return collectons
+from the database ordered by due dates with earliest dates first.
 
-        * accept a name input parameter
-        * use the TodoList Model class to find all TodoLists with the supplied list_name. Note that list_name is not required to be unique.
-        * return a collection of TodoList instances that match the provided name
-    
-        ```script
-        $ rspec -e rq05.2
-        ```
+    ```shell
+    $ rspec -e rq10
+    ```
+11. Add validation to `User` and `Profile` models
 
-6. Get rows from DB by PK
+  * User
+    - Define a validation for `username` to enforce that username be supplied by using a built-in validator
 
-    1. Implement the `get_user_byid` method within `assignment/assignment.rb` to 
+  * Profile
+    - Define custom validator that permits `first_name` or `last_name` to be null but not both
+    - Define a validation for `gender` to be either "male" or "female" by using a built-in validator
+    - Define custom validator that prevents anyone that is `male` (gender) from having the 
+      `first_name` "Sue" ;)
 
-        * accept an id input parameter
-        * use the User Model class to get the User associated with the `id` primary key
-        * return the User instance that matches the provided id
-    
-        ```script
-        $ rspec -e rq06.1
-        ```
+    ```shell
+    $ rspec -e rq11
+    ```
 
-    2. Implement the `get_todolist_byid` method within `assignment/assignment.rb` to 
+12. Add a cascade of deletes that will remove `Profile`, `TodoList`, and `TodoItem` rows for 
+any `User` removed.
 
-        * accept an id input parameter
-        * use the TodoList Model class to get the TodoList associated with the `id` primary key
-        * return the TodoList instance that matches the provided id
-    
-        ```script
-        $ rspec -e rq06.2
-        ```
+    ```shell
+    $ rspec -e rq12
+    ```
 
-7. Update rows in DB
+13. Add a method to the `User` model class called `get_completed_count`, which: 
+  
+    * determines the number of `TodoItems` the `User` has completed using an aggregate query function 
+        - (Hint: You are looking for the count of `TodoItems` associated with a specific `User` where `completed:true`)
+    * returns the count
 
-    1. Implement the `update_password` method within `assignment/assignment.rb` to 
+    ```shell
+    $ rspec -e rq13
+    ```
+14. Add a **class** method to the `Profile` class, called `get_all_profiles`, which:
+ 
+    * accepts a min and max for the `birth year`
+    * issues a `BETWEEN` SQL clause in a `where` clause to locate `Profiles` 
+    with birth years that are between min year and max year 
+    * defends itself against SQL injection when applying the parameters to the SQL clauses
+    * returns a collection of Profiles in ASC birth year order
 
-        * accept an id and password_digest input parameters
-        * use the User Model class to update the `password_digest` for the User associated with the id primary key
-        * (no return is required)
-    
-        ```script
-        $ rspec -e rq07.1
-        ```
-
-    2. Implement the `update_listname` method within `assignment/assignment.rb` to 
-
-        * accept an id and name input parameters
-        * use the TodoList Model class to update the `list_name` for the TodoList associated with id primary key 
-        * (no return is required)
-    
-        ```script
-        $ rspec -e rq07.2
-        ```
-
-8. Delete rows from DB
-
-    1. Implement the `delete_user` method within `assignment/assignment.rb` to 
-
-        * accept an id input parameter
-        * use the User Model class to delete the User associated with the `id` primary key from the database
-        * (no return is required)
-    
-        ```script
-        $ rspec -e rq08.1
-        ```
-
-    2. Implement the `delete_todolist` method within `assignment/assignment.rb` to 
-
-        * accept an id input parameter
-        * use the TodoList Model class to delete the TodoList associated with the `id` primary key.
-        * (no return is required)
-    
-        ```script
-        $ rspec -e rq08.2
-        ```
+    ```shell
+    $ rspec -e rq14
+    ```
 
 ### Self Grading/Feedback
 
@@ -338,12 +378,11 @@ your solution. They must be run from the project root directory.
 ```shell
 $ rspec 
 ...
-Finished in 3.39 seconds (files took 1.47 seconds to load)
-52 examples, 0 failures
+Finished in 9.56 seconds (files took 1.41 seconds to load)
+56 examples, 0 failures
 ```
 
 You can run as many specific tests you wish be adding `-e rq## -e rq##`
-
 ```shell
 $ rspec -e rq01 -e rq02
 ```
@@ -364,8 +403,6 @@ and will perform a test with different query terms.
 |   |-- mailers
 |   |-- models
 |   `-- views
-|-- assignment
-|   `-- assignment.rb
 |-- bin
 |-- config
 |-- config.ru
@@ -381,4 +418,4 @@ and will perform a test with different query terms.
 `-- vendor
 ```
 
-#### Last Updated: 2015-10-29
+#### Last Updated: 2015-10-20
