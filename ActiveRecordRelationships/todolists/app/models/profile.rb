@@ -16,4 +16,8 @@ class Profile < ActiveRecord::Base
   		errors.add(:gender, "If gender is a male with a first_name Sue this will give an error. (Sorry! It's 21st century and you can be called however you like!")
   	end
   end
+
+  def self.get_all_profiles(min,max)
+  	Profile.where("birth_year BETWEEN ? AND ?",min, max).order(birth_year: :asc)  
+  end
 end
