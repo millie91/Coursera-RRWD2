@@ -1,3 +1,35 @@
+.book-title { 
+	font: bold 15px arial, sans-serif; 
+}
+.note-title {
+	font: bold 12px arial, sans-serif;
+}
+.book {
+	padding-bottom: 10px;
+}
+
+.note {
+	background: lightgray;
+	margin: 15px;
+	padding: 5px;
+	border: 1px solid;
+	border-radius: 5px;
+	width: 300px;
+}
+
+#notice {
+	color: green;
+}
+#alert {
+	color: red;
+}
+.field {
+	margin: 5px;
+}
+.actions {
+	margin: 10px 0;
+}
+
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
