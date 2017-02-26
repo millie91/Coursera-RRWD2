@@ -3,8 +3,10 @@ class TodoListsController < ApplicationController
 
   # GET /todo_lists
   # GET /todo_lists.json
+  
+  # Update the todolist#index action to return a page of TodoLists associated with the current_user that are up to 8 objects per_page. 
   def index
-    @todo_lists = current_user.todo_lists.all
+    @todo_lists = current_user.todo_lists.paginate(page: params[:page], per_page: 8)
   end
 
   # GET /todo_lists/1

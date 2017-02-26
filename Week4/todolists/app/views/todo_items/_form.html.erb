@@ -1,4 +1,4 @@
-<%= form_for [@todo_list, @todo_item] do |f| %>
+<%= form_for([@todo_list, @todo_item]) do |f| %>
   <% if @todo_item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@todo_item.errors.count, "error") %> prohibited this todo_item from being saved:</h2>
@@ -23,11 +23,12 @@
     <%= f.label :description %><br>
     <%= f.text_area :description %>
   </div>
+ <!--  Make the display of completed conditional on the todo_item being edited versus new. Users should not be allowed to see/change the completed property for a new TodoItem. Edited objects are persisted and can be tested using persisted?. . -->
   <% if @todo_item.persisted? %>
-    <div class="field">
-      <%= f.label :completed %><br>
-      <%= f.check_box :completed %>
-    </div>
+  <div class="field">
+    <%= f.label :completed %><br>
+    <%= f.check_box :completed %>
+  </div>
   <% end %>
   <div class="actions">
     <%= f.submit %>

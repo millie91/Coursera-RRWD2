@@ -20,5 +20,7 @@
   <%= @todo_item.completed %>
 </p>
 
+<!-- Update the links on the todo_items#show page (todo_items/show.html.erb) to include the TodoList the TodoItem is a member of. -->
 <%= link_to 'Edit', edit_todo_list_todo_item_path(@todo_list, @todo_item) %> |
 <%= link_to 'Back', @todo_list %>
+

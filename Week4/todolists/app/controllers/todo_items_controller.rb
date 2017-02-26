@@ -1,11 +1,18 @@
 class TodoItemsController < ApplicationController
+  
+  # Add a private helper method called set_todo_list that sets the todo_list instance variable from the :todo_list_id property passed in via the params. 
   before_action :set_todo_list
+
   before_action :set_todo_item, only: [:show, :edit, :update, :destroy]
 
+
+  # GET /todo_items/1
+  # GET /todo_items/1.json
   def show
   end
 
   # GET /todo_items/new
+  # Update the todo_item#new action to return a new TodoItem instance that is initialized to reference its parent @todo_list, which is provided by set_todo_list.
   def new
     @todo_item = @todo_list.todo_items.new
   end
@@ -16,6 +23,8 @@ class TodoItemsController < ApplicationController
 
   # POST /todo_items
   # POST /todo_items.json
+
+  # Update the todo_item#create to create a new TodoItem instance based on the todo_item_params as before. Except now create this instance associated with the @todo_list provided by set_todo_list.
   def create
     @todo_item = @todo_list.todo_items.new(todo_item_params)
 
@@ -55,13 +64,13 @@ class TodoItemsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions. Update the private helper method called set_todo_item to scope its find command to the todo_items of a specific @todo_list list.
     def set_todo_item
       @todo_item = @todo_list.todo_items.find(params[:id])
     end
 
     def set_todo_list
-      @todo_list = TodoList.find params[:todo_list_id]
+      @todo_list = TodoList.find(params[:todo_list_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
